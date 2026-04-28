@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudSecure — SaaS Cloud Controller</title>
+  <meta name="description" content="SaaS Cloud Controller with HDFS distributed storage and AES-256 encryption">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ========== LOGIN / REGISTER SCREEN ========== -->
+  <div class="auth-screen" id="auth-screen">
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <div class="auth-container">
+      <div class="auth-brand">
+        <div class="auth-logo">☁️</div>
+        <h1>CloudSecure</h1>
+        <p>SaaS Cloud Controller</p>
+      </div>
+
+      <!-- Login Form -->
+      <div class="auth-card" id="login-card">
+        <h2 class="auth-title">Welcome Back</h2>
+        <p class="auth-subtitle">Sign in to your cloud console</p>
+        <form id="login-form" onsubmit="return handleLogin(event)">
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="admin@cloudsecure.io" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-primary" id="login-btn">Sign In</button>
+        </form>
+        <p class="auth-switch">Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+      </div>
+
+      <!-- Register Form -->
+      <div class="auth-card hidden" id="register-card">
+        <h2 class="auth-title">Create Account</h2>
+        <p class="auth-subtitle">Set up your cloud admin account</p>
+        <form id="register-form" onsubmit="return handleRegister(event)">
+          <div class="form-group">
+            <label for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" placeholder="Suyash Kumar" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" placeholder="Min 6 characters" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label for="reg-role">Role</label>
+            <select id="reg-role">
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary" id="register-btn">Create Account</button>
+        </form>
+        <p class="auth-switch">Already have an account? <a href="#" onclick="showLogin()">Sign In</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MAIN APP (hidden until login) ========== -->
+  <div class="app-wrapper hidden" id="app-wrapper">
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">☁️</div>
+        <div>
+          <h1 class="brand-title">CloudSecure</h1>
+          <span class="brand-sub">SaaS Controller v1.0</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a href="#" class="nav-item" data-page="files" id="nav-files">
+          <span class="nav-icon">📁</span> File Manager
+        </a>
+        <a href="#" class="nav-item" data-page="nodes" id="nav-nodes">
+          <span class="nav-icon">🖥️</span> Node Monitor
+        </a>
+        <a href="#" class="nav-item" data-page="admin" id="nav-admin">
+          <span class="nav-icon">⚙️</span> Admin Panel
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info" id="user-info">
+          <div class="user-avatar" id="user-avatar">A</div>
+          <div class="user-details">
+            <span class="user-name" id="user-name">Admin</span>
+            <span class="user-role" id="user-role">admin</span>
+          </div>
+          <button class="logout-btn" onclick="handleLogout()" title="Logout">⏻</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+
+      <!-- ========== DASHBOARD PAGE ========== -->
+      <section class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h2 class="page-title">Cloud Dashboard</h2>
+          <span class="page-subtitle">Real-time cluster overview</span>
+        </div>
+
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">📄</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-files">0</span>
+              <span class="stat-label">Total Files</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">💾</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-storage">0 B</span>
+              <span class="stat-label">Total Storage</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">🧩</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-blocks">0</span>
+              <span class="stat-label">Total Blocks</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">🖥️</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-nodes">3</span>
+              <span class="stat-label">Active Nodes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card" id="node-distribution-card">
+            <h3 class="card-title">Storage Distribution</h3>
+            <div class="node-bars" id="node-bars"></div>
+          </div>
+          <div class="card" id="recent-files-card">
+            <h3 class="card-title">Recent Files</h3>
+            <div class="recent-list" id="recent-list">
+              <p class="empty-state">No files uploaded yet</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== FILE MANAGER PAGE ========== -->
+      <section class="page" id="page-files">
+        <div class="page-header">
+          <h2 class="page-title">File Manager</h2>
+          <span class="page-subtitle">Upload, download & manage encrypted files</span>
+        </div>
+
+        <div class="card upload-card">
+          <div class="upload-zone" id="upload-zone">
+            <div class="upload-icon">⬆️</div>
+            <p class="upload-text">Drag & drop files here or <label for="file-input" class="upload-link">browse</label></p>
+            <p class="upload-hint">Files are split into 256KB blocks and encrypted with AES-256</p>
+            <input type="file" id="file-input" class="hidden-input">
+          </div>
+          <div class="upload-progress hidden" id="upload-progress">
+            <div class="progress-info">
+              <span id="upload-filename">file.txt</span>
+              <span id="upload-status">Uploading...</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Stored Files</h3>
+          <div class="table-wrapper">
+            <table class="file-table" id="file-table">
+              <thead>
+                <tr>
+                  <th>File Name</th>
+                  <th>Size</th>
+                  <th>Blocks</th>
+                  <th>Encryption</th>
+                  <th>Uploaded</th>
+                  <th>⭐</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="file-tbody">
+                <tr class="empty-row"><td colspan="7">No files uploaded yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Block Detail Modal -->
+        <div class="modal-overlay hidden" id="block-modal">
+          <div class="modal">
+            <div class="modal-header">
+              <h3 id="modal-title">Block Distribution</h3>
+              <button class="modal-close" id="modal-close">✕</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== NODE MONITOR PAGE ========== -->
+      <section class="page" id="page-nodes">
+        <div class="page-header">
+          <h2 class="page-title">Node Monitor</h2>
+          <span class="page-subtitle">DataNode health & storage status</span>
+        </div>
+        <div class="nodes-grid" id="nodes-grid"></div>
+      </section>
+
+      <!-- ========== ADMIN PANEL PAGE ========== -->
+      <section class="page" id="page-admin">
+        <div class="page-header">
+          <h2 class="page-title">Admin Panel</h2>
+          <span class="page-subtitle">Manage users, settings & cluster configuration</span>
+        </div>
+
+        <div class="admin-grid">
+          <div class="card">
+            <h3 class="card-title">Registered Users</h3>
+            <div class="table-wrapper">
+              <table class="file-table">
+                <thead>
+                  <tr><th>Name</th><th>Email</th><th>Role</th><th>Registered</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="users-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Cluster Configuration</h3>
+            <div class="config-grid">
+              <div class="config-item">
+                <span class="config-label">Block Size</span>
+                <span class="config-value">256 KB</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">Encryption</span>
+                <span class="config-value">AES-256-CBC</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">DataNodes</span>
+                <span class="config-value">3</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">Replication Factor</span>
+                <span class="config-value">1</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">Max Capacity / Node</span>
+                <span class="config-value">100 MB</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">Allocation Strategy</span>
+                <span class="config-value">Round-Robin</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Starred Files</h3>
+            <div id="starred-list" class="recent-list">
+              <p class="empty-state">No starred files</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
