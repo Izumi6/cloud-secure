@@ -26,9 +26,9 @@ function handleLogin(e) {
 
   if (user) {
     loginAs(user);
-  } else if (email === 'admin@cloudsecure.io' && pass === 'admin123') {
+  } else if (email === 'admin@gmail.com' && pass === 'admin123') {
     // Default admin
-    loginAs({ name: 'Admin', email: 'admin@cloudsecure.io', role: 'admin', registeredAt: new Date().toISOString() });
+    loginAs({ name: 'Admin', email: 'admin@gmail.com', role: 'admin', registeredAt: new Date().toISOString() });
   } else {
     toast('Invalid credentials', 'error');
   }
@@ -350,7 +350,7 @@ function loadAdmin() {
   const users = JSON.parse(localStorage.getItem('cs_users') || '[]');
   // Add default admin if not in list
   const allUsers = [
-    { name: 'Admin', email: 'admin@cloudsecure.io', role: 'admin', registeredAt: '2026-01-01T00:00:00Z' },
+    { name: 'Admin', email: 'admin@gmail.com', role: 'admin', registeredAt: '2026-01-01T00:00:00Z' },
     ...users
   ];
 
@@ -360,7 +360,7 @@ function loadAdmin() {
       <td>${u.email}</td>
       <td><span class="encryption-badge">${u.role === 'admin' ? '👑 Admin' : '👤 User'}</span></td>
       <td>${formatDate(u.registeredAt)}</td>
-      <td>${u.email === 'admin@cloudsecure.io' ? '<span style="color:var(--text-muted)">Default</span>' : `<button class="action-btn danger" onclick="removeUser('${u.email}')">Remove</button>`}</td>
+      <td>${u.email === 'admin@gmail.com' ? '<span style="color:var(--text-muted)">Default</span>' : `<button class="action-btn danger" onclick="removeUser('${u.email}')">Remove</button>`}</td>
     </tr>`).join('');
 
   // Starred files list
