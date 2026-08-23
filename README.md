@@ -1,6 +1,8 @@
-# CloudSecure
+# ☁️ CloudSecure — SaaS Cloud Controller
 
-SaaS Cloud Controller with HDFS-like Distributed Storage & AES-256 Encryption
+> HDFS-like Distributed Storage with AES-256 Encryption
+
+🔗 **Live Demo:** [cloud-secure-c411.vercel.app](https://cloud-secure-c411.vercel.app)
 
 ## Overview
 
@@ -16,30 +18,34 @@ CloudSecure is a cloud controller that demonstrates distributed file storage con
 - **Block Visualization** — See which blocks are on which nodes
 - **Node Monitoring** — Real-time DataNode status
 - **Admin Panel** — User management & cluster config
+- **Mobile Responsive** — Hamburger sidebar on mobile
 
 ## Tech Stack
 
-- **Backend:** Node.js + Express.js
-- **Encryption:** Node.js `crypto` (AES-256-CBC)
-- **Storage:** Local filesystem (simulated DataNodes)
-- **Frontend:** Vanilla HTML/CSS/JS
+| Technology | Purpose |
+|-----------|---------|
+| Node.js + Express | Backend API server |
+| AES-256-CBC | Block-level encryption |
+| Vanilla HTML/CSS/JS | Frontend dashboard |
+| Multer | File upload handling |
+| Vercel Serverless | Production deployment |
 
-## Setup
+## Quick Start
 
 ```bash
 npm install
 npm start
 ```
 
-Open http://localhost:3000
+**Default Login:** `admin@gmail.com` / `admin123`
 
-**Default Login:** `admin@cloudsecure.io` / `admin123`
+Or register a new account via the sign-up form.
 
 ## Architecture
 
 ```
-Upload → Split into blocks → Encrypt each block → Distribute across nodes
-Download → Collect blocks from nodes → Decrypt → Reassemble original file
+Upload → Split into 256KB blocks → Encrypt (AES-256-CBC) → Distribute across 3 DataNodes
+Download → Collect blocks → Decrypt → Reassemble original file
 ```
 
 ## API Endpoints
@@ -53,3 +59,7 @@ Download → Collect blocks from nodes → Decrypt → Reassemble original file
 | DELETE | /api/files/:id | Delete file & blocks |
 | GET | /api/nodes | DataNode status |
 | GET | /api/dashboard | Cluster statistics |
+
+## Author
+
+**Suyash Vakhariya** — [suyashvakhariya.in](https://suyashvakhariya.in)
