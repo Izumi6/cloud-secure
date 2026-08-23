@@ -5,6 +5,14 @@ let currentPage = 'dashboard';
 let currentUser = null;
 let starredFiles = JSON.parse(localStorage.getItem('cs_starred') || '[]');
 
+// ===== MOBILE SIDEBAR =====
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('active');
+}
+
 // ===== AUTH =====
 function showLogin() {
   document.getElementById('login-card').classList.remove('hidden');
@@ -108,6 +116,12 @@ function navigateTo(page) {
   document.querySelector(`[data-page="${page}"]`).classList.add('active');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(`page-${page}`).classList.add('active');
+
+  // Close mobile sidebar
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar) sidebar.classList.remove('open');
+  if (overlay) overlay.classList.remove('active');
 
   if (page === 'dashboard') loadDashboard();
   if (page === 'files') loadFiles();
